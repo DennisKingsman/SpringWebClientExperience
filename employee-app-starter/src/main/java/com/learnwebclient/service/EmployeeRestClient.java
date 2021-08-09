@@ -1,7 +1,6 @@
 package com.learnwebclient.service;
 
 import com.learnwebclient.dto.Employee;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
