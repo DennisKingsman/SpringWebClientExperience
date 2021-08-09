@@ -76,4 +76,26 @@ public class EmployeeRestClient {
         }
     }
 
+    public Employee postNewEmp(Employee employee) {
+        try {
+            return webClient.post().uri(POST_NEW_EMP_V1)
+                    .syncBody(employee)
+                    .retrieve()
+                    .bodyToMono(Employee.class)
+                    .block();
+        } catch (WebClientResponseException ex) {
+            log.error(
+                    "Response code is {} and the response body is {}",
+                    ex.getRawStatusCode(),
+                    ex.getResponseBodyAsString()
+            );
+            log.error(ex.getMessage());
+            log.error("StackTrace: {}", ex);
+            throw ex;
+        } catch (Exception ex) {
+            log.error("StackTrace: {}", ex);
+            throw ex;
+        }
+    }
+
 }

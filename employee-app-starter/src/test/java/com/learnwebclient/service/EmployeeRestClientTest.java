@@ -55,4 +55,35 @@ class EmployeeRestClientTest {
         );
     }
 
+    @Test
+    void postNewEmpTest() {
+        Employee employee = new Employee();
+        employee.setEmpId(12);
+        employee.setAge(54);
+        employee.setFirstName("Irak");
+        employee.setGender("Male");
+        employee.setLastName("Habib");
+        employee.setRole("dev");
+
+        Employee expected = employeeRestClient.postNewEmp(employee);
+        System.out.print(expected.getFirstName());
+        assertNotNull(expected.getFirstName());
+    }
+
+    @Test
+    void postNewEmpBadRequestTest() {
+        Employee employee = new Employee();
+        employee.setEmpId(12);
+        employee.setAge(54);
+        employee.setFirstName(null);
+        employee.setGender("Male");
+        employee.setLastName("Habib");
+        employee.setRole("dev");
+
+        assertThrows(
+                WebClientResponseException.class,
+                () -> employeeRestClient.postNewEmp(employee)
+        );
+    }
+
 }
