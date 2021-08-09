@@ -37,4 +37,22 @@ class EmployeeRestClientTest {
         );
     }
 
+    @Test
+    void getEmpsByNameTest() {
+        String name = "Chris";
+        List<Employee> employees = employeeRestClient.getEmpsByName(name);
+        assertTrue(employees.size() > 0);
+        Employee actual = employees.get(0);
+        assertEquals("Chris", actual.getFirstName());
+    }
+
+    @Test
+    void getEmpsByNameNotFoundTest() {
+        String name = "NotChris";
+        assertThrows(
+                WebClientResponseException.class,
+                () -> employeeRestClient.getEmpsByName(name)
+        );
+    }
+
 }
