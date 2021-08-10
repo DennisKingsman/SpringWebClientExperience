@@ -120,4 +120,11 @@ public class EmployeeRestClient {
         }
     }
 
+    public String deleteEmpById(Long id) {
+        return webClient.delete().uri(GET_EMP_BY_ID_V1, id)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+
 }

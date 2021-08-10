@@ -123,4 +123,11 @@ class EmployeeRestClientTest {
         );
     }
 
+    @Test
+    void deleteEmpByIdTest() {
+        String expected = "Employee deleted successfully.";
+        String actualResponse = employeeRestClient.deleteEmpById(6L);
+        assertEquals(expected, actualResponse);
+    }
+
 }
