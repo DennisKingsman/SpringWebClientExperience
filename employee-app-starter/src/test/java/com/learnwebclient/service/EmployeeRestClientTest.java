@@ -104,4 +104,23 @@ class EmployeeRestClientTest {
         assertEquals("new LastName", updatedEmp.getLastName());
     }
 
+    @Test
+    void updateEmpErrorTest() {
+        Employee employee = new Employee();
+        employee.setId(122L);
+        employee.setFirstName("new Name");
+        employee.setLastName("new LastName");
+        employee.setGender("Male");
+        employee.setAge(54);
+        employee.setRole("dev");
+
+        assertThrows(
+                WebClientResponseException.class,
+                () -> employeeRestClient
+                        .updateEmp(
+                                employee.getId(),
+                                employee)
+        );
+    }
+
 }

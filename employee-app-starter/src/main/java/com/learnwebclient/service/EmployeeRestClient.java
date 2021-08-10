@@ -99,11 +99,25 @@ public class EmployeeRestClient {
     }
 
     public Employee updateEmp(Long empId, Employee employee) {
-        return webClient.put().uri(GET_EMP_BY_ID_V1, empId)
-                .syncBody(employee)
-                .retrieve()
-                .bodyToMono(Employee.class)
-                .block();
+        try {
+            return webClient.put().uri(GET_EMP_BY_ID_V1, empId)
+                    .syncBody(employee)
+                    .retrieve()
+                    .bodyToMono(Employee.class)
+                    .block();
+        } catch (WebClientResponseException ex) {
+            log.error(
+                    "Response code is {} and the response body is {}",
+                    ex.getRawStatusCode(),
+                    ex.getResponseBodyAsString()
+            );
+            log.error(ex.getMessage());
+            log.error("StackTrace: {}", ex);
+            throw ex;
+        } catch (Exception ex) {
+            log.error("StackTrace: {}", ex);
+            throw ex;
+        }
     }
 
 }
