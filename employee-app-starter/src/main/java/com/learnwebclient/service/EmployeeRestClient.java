@@ -1,10 +1,14 @@
 package com.learnwebclient.service;
 
 import com.learnwebclient.dto.Employee;
+import com.learnwebclient.exception.ClientDataException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -46,6 +50,26 @@ public class EmployeeRestClient {
             log.error("StackTrace: {}", ex);
             throw ex;
         }
+    }
+
+    public Employee getEmpByIdFuncHandleEx(Long empId) {
+        return webClient.get().uri(GET_EMP_BY_ID_V1, empId)
+                .retrieve()
+                .onStatus(
+                        HttpStatus::is4xxClientError,
+                        clientResponse -> handle4xxError(clientResponse)
+                )
+                .bodyToMono(Employee.class)
+                .block();
+    }
+
+    private Mono<? extends Throwable> handle4xxError(ClientResponse clientResponse) {
+        Mono<String> errMessage = clientResponse.bodyToMono(String.class);
+        return errMessage.flatMap((message) -> {
+            log.error("Error response code {}", clientResponse.rawStatusCode());
+            log.error("Error message is {}", message);
+            throw new ClientDataException(message);
+        });
     }
 
     public List<Employee> getEmpsByName(String employeeName) {

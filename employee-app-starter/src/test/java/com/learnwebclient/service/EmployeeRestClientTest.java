@@ -1,6 +1,7 @@
 package com.learnwebclient.service;
 
 import com.learnwebclient.dto.Employee;
+import com.learnwebclient.exception.ClientDataException;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -37,6 +38,15 @@ class EmployeeRestClientTest {
         assertThrows(
                 WebClientResponseException.class,
                 () -> employeeRestClient.getEmpById(empId)
+        );
+    }
+
+    @Test
+    void getEmpByIdFuncHandleExTest() {
+        Long empId = 10L;
+        assertThrows(
+                ClientDataException.class,
+                () -> employeeRestClient.getEmpByIdFuncHandleEx(empId)
         );
     }
 
