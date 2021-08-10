@@ -86,4 +86,19 @@ class EmployeeRestClientTest {
         );
     }
 
+    @Test
+    void updateEmpTest() {
+        Employee employee = new Employee();
+        employee.setEmpId(2);
+        employee.setFirstName("new Name");
+        employee.setLastName("new LastName");
+        employee.setGender("Male");
+        employee.setAge(54);
+        employee.setRole("dev");
+
+        Employee updatedEmp = employeeRestClient.updateEmp(employee.getEmpId(), employee);
+        assertEquals("new Name", updatedEmp.getFirstName());
+        assertEquals("new LastName", updatedEmp.getLastName());
+    }
+
 }

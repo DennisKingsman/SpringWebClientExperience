@@ -98,4 +98,12 @@ public class EmployeeRestClient {
         }
     }
 
+    public Employee updateEmp(int empId, Employee employee) {
+        return webClient.put().uri(GET_EMP_BY_ID_V1, empId)
+                .syncBody(employee)
+                .retrieve()
+                .bodyToMono(Employee.class)
+                .block();
+    }
+
 }
