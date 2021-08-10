@@ -18,19 +18,22 @@ class EmployeeRestClientTest {
     @Test
     void getAllEmpTest() {
         List<Employee> employees = employeeRestClient.getAllEmp();
+        for (Employee emp: employees) {
+            System.out.println(emp.toString());
+        }
         assertTrue(employees.size() > 0);
     }
 
     @Test
     void getEmpByIdTest() {
-        int empId = 1;
+        Long empId = 1L;
         Employee actual = employeeRestClient.getEmpById(empId);
         assertEquals("Chris", actual.getFirstName());
     }
 
     @Test
     void getEmpByIdNotFoundTest() {
-        int empId = 10;
+        Long empId = 10L;
         assertThrows(
                 WebClientResponseException.class,
                 () -> employeeRestClient.getEmpById(empId)
@@ -58,7 +61,7 @@ class EmployeeRestClientTest {
     @Test
     void postNewEmpTest() {
         Employee employee = new Employee();
-        employee.setEmpId(12);
+        employee.setId(12L);
         employee.setAge(54);
         employee.setFirstName("Irak");
         employee.setGender("Male");
@@ -67,13 +70,13 @@ class EmployeeRestClientTest {
 
         Employee expected = employeeRestClient.postNewEmp(employee);
         System.out.print(expected.getFirstName());
-        assertNotNull(expected.getFirstName());
+        assertNotNull(expected.getId());
     }
 
     @Test
     void postNewEmpBadRequestTest() {
         Employee employee = new Employee();
-        employee.setEmpId(12);
+        employee.setId(12L);
         employee.setAge(54);
         employee.setFirstName(null);
         employee.setGender("Male");
@@ -89,14 +92,14 @@ class EmployeeRestClientTest {
     @Test
     void updateEmpTest() {
         Employee employee = new Employee();
-        employee.setEmpId(2);
+        employee.setId(2L);
         employee.setFirstName("new Name");
         employee.setLastName("new LastName");
         employee.setGender("Male");
         employee.setAge(54);
         employee.setRole("dev");
 
-        Employee updatedEmp = employeeRestClient.updateEmp(employee.getEmpId(), employee);
+        Employee updatedEmp = employeeRestClient.updateEmp(employee.getId(), employee);
         assertEquals("new Name", updatedEmp.getFirstName());
         assertEquals("new LastName", updatedEmp.getLastName());
     }

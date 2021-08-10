@@ -27,7 +27,7 @@ public class EmployeeRestClient {
                 .block();
     }
 
-    public Employee getEmpById(int empId) {
+    public Employee getEmpById(Long empId) {
         try {
             return webClient.get().uri(GET_EMP_BY_ID_V1, empId)
                     .retrieve()
@@ -98,7 +98,7 @@ public class EmployeeRestClient {
         }
     }
 
-    public Employee updateEmp(int empId, Employee employee) {
+    public Employee updateEmp(Long empId, Employee employee) {
         return webClient.put().uri(GET_EMP_BY_ID_V1, empId)
                 .syncBody(employee)
                 .retrieve()
