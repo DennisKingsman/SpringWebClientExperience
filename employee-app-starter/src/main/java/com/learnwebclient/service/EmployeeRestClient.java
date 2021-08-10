@@ -9,7 +9,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
+import reactor.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 
 import static com.learnwebclient.constants.EmployeeConstants.*;
@@ -22,6 +24,11 @@ public class EmployeeRestClient {
     public EmployeeRestClient(WebClient webClient) {
         this.webClient = webClient;
     }
+
+    public Retry<?> fixedRetry = Retry.anyOf(WebClientResponseException.class)
+            .fixedBackoff(Duration.ofSeconds(2))
+            .retryMax(3)
+            .doOnRetry((ex) -> log.error(ex.toString()));
 
     public List<Employee> getAllEmp() {
         return webClient.get().uri(GET_ALL_EMP_V1)
@@ -36,6 +43,28 @@ public class EmployeeRestClient {
             return webClient.get().uri(GET_EMP_BY_ID_V1, empId)
                     .retrieve()
                     .bodyToMono(Employee.class)
+                    .block();
+        } catch (WebClientResponseException ex) {
+            log.error(
+                    "Response code is {} and the response body is {}",
+                    ex.getRawStatusCode(),
+                    ex.getResponseBodyAsString()
+            );
+            log.error(ex.getMessage());
+            log.error("StackTrace: {}", ex);
+            throw ex;
+        } catch (Exception ex) {
+            log.error("StackTrace: {}", ex);
+            throw ex;
+        }
+    }
+
+    public Employee getEmpByIdWithRetry(Long empId) {
+        try {
+            return webClient.get().uri(GET_EMP_BY_ID_V1, empId)
+                    .retrieve()
+                    .bodyToMono(Employee.class)
+                    .retryWhen(fixedRetry)
                     .block();
         } catch (WebClientResponseException ex) {
             log.error(
