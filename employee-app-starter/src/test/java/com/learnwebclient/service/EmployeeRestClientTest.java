@@ -5,6 +5,7 @@ import com.learnwebclient.exception.ClientDataException;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.retry.RetryExhaustedException;
 
 import java.util.List;
 
@@ -38,6 +39,15 @@ class EmployeeRestClientTest {
         assertThrows(
                 WebClientResponseException.class,
                 () -> employeeRestClient.getEmpById(empId)
+        );
+    }
+
+    @Test
+    void getEmpByIdNotFoundWithRetryTest() {
+        Long empId = 10L;
+        assertThrows(
+                RetryExhaustedException.class,
+                () -> employeeRestClient.getEmpByIdWithRetry(empId)
         );
     }
 
